@@ -14,3 +14,11 @@ D:\CLASS\软件工程\大程\BlazorForum-new\BlazorForum.Models\obj\Debug\netcor
 D:\CLASS\软件工程\大程\BlazorForum-new\BlazorForum.Models\obj\Debug\netcoreapp3.1\BlazorForum.Models.AssemblyInfo.cs
 D:\CLASS\软件工程\大程\BlazorForum-new\BlazorForum.Models\obj\Debug\netcoreapp3.1\BlazorForum.Models.dll
 D:\CLASS\软件工程\大程\BlazorForum-new\BlazorForum.Models\obj\Debug\netcoreapp3.1\BlazorForum.Models.pdb
+D:\CLASS\软件工程\大程\论坛\TeachingForum\BlazorForum.Models\bin\Debug\netcoreapp3.1\BlazorForum.Models.deps.json
+D:\CLASS\软件工程\大程\论坛\TeachingForum\BlazorForum.Models\bin\Debug\netcoreapp3.1\BlazorForum.Models.dll
+D:\CLASS\软件工程\大程\论坛\TeachingForum\BlazorForum.Models\bin\Debug\netcoreapp3.1\BlazorForum.Models.pdb
+D:\CLASS\软件工程\大程\论坛\TeachingForum\BlazorForum.Models\obj\Debug\netcoreapp3.1\BlazorForum.Models.csprojAssemblyReference.cache
+D:\CLASS\软件工程\大程\论坛\TeachingForum\BlazorForum.Models\obj\Debug\netcoreapp3.1\BlazorForum.Models.AssemblyInfoInputs.cache
+D:\CLASS\软件工程\大程\论坛\TeachingForum\BlazorForum.Models\obj\Debug\netcoreapp3.1\BlazorForum.Models.AssemblyInfo.cs
+D:\CLASS\软件工程\大程\论坛\TeachingForum\BlazorForum.Models\obj\Debug\netcoreapp3.1\BlazorForum.Models.dll
+D:\CLASS\软件工程\大程\论坛\TeachingForum\BlazorForum.Models\obj\Debug\netcoreapp3.1\BlazorForum.Models.pdb
