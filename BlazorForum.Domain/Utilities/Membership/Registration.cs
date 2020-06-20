@@ -30,8 +30,8 @@ namespace BlazorForum.Domain.Utilities.Membership
         {
             try
             {
-                await AddRolesHelper("Administrator");
-                await AddRolesHelper("Contributor");
+                await AddRolesHelper("Teacher");
+                await AddRolesHelper("Student");
             }
             catch(Exception ex)
             {
@@ -56,11 +56,11 @@ namespace BlazorForum.Domain.Utilities.Membership
             try
             {
                 var users = _userManager.Users.ToList();
-                var administrators = await _userManager.GetUsersInRoleAsync("Administrator");
+                var administrators = await _userManager.GetUsersInRoleAsync("Teacher");
                 if (users.Count == 1 && administrators.Count == 0)
-                    await _userManager.AddToRoleAsync(user, "Administrator");
+                    await _userManager.AddToRoleAsync(user, "Teacher");
                 else
-                    await _userManager.AddToRoleAsync(user, "Contributor");
+                    await _userManager.AddToRoleAsync(user, "Student");
             }
             catch(Exception ex)
             {

@@ -56,7 +56,7 @@ namespace BlazorForum.Data.Repository
                 {
                     Title = "欢迎页",
                     MainContent = "<p>欢迎来到论坛" +
-                    "可以点击\"版面\"进行看帖、发帖;点击右上角用户名，可进行个人信息管理</p><p>若你是管理员，还可以点击\"管理论坛\"进行管理</p>",
+                    "可以点击\"版面\"进行看帖、发帖;点击右上角用户名，可进行个人信息管理</p><p>若你是老师，还可以点击\"管理论坛\"进行管理</p>",
                     IsIndex = true,
                     AllowDelete = false
                 };
