@@ -10,7 +10,7 @@
 
 但是这样还没有版面，在管理界面可以进行一件添加(如下图)，当然也可以自己建版面。
 
-![image-20200620162552588](assets\data_initial.png)
+![image-20200620162552588](assets/data_initial.png)
 
 
 
