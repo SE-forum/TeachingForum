@@ -1,0 +1,134 @@
+﻿@page "/manage/forums/{forumId:int}/categories/{categoryId:int}/topics/{topicId:int}"
+@inject HeadBuilderService head
+@inject IManageForumTopics manageTopics
+@inject IManageForumPosts managePosts
+@inject UserManager<ApplicationUser> userManager
+@inject IBlazorModal blazorModal
+@inject NavigationManager navManager
+@inject IJSRuntime jsRuntime
+
+<h3>@_topic.Title</h3>
+<section class="content-container">
+    @((MarkupString)_topic.TopicText)
+    <div class="mt-2">
+        <a href="@String.Format("/admin/manage/forums/{0}/categories/{1}/topics/{2}/edit", forumId, categoryId, topicId)"
+           class="btn btn-blazorforum mr-2">编辑</a>
+        <button class="btn btn-blazorforum-danger" @onclick="(() => DeleteTopicClicked())">删除</button>
+    </div>
+</section>
+
+<section class="mt-3">
+    <header class="secondary-header">
+        <i class="oi oi-comment-square mr-2"></i>帖子
+    </header>
+    <ul class="forum-ul">
+        @if (_posts == null)
+        {
+            <li>Loading...</li>
+        }
+        else if (_posts.Count == 0)
+        {
+            <li>没有帖子</li>
+        }
+        @foreach (var post in _posts)
+        {
+            <li>
+                @((MarkupString)post.PostText)
+                <div class="list-item-details">
+                    Posted @DateTimeFormatting.RelativeDateAgo(post.PostedDate)
+                    by @post.UserName  | Flags @post.Flags
+                    <div>
+                        <a href="@String.Format("/admin/manage/forums/{0}/categories/{1}/topics/{2}/posts/{3}/edit", forumId, categoryId, topicId, post.ForumPostId)"
+                           class="btn btn-sm btn-blazorforum mt-1 mr-2">
+                            编辑
+                        </a>
+                        <button class="btn btn-sm btn-blazorforum-danger mt-1" @onclick="@(() => DeletePostClicked(post.ForumPostId))">
+                            删除
+                        </button>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+</section>
+
+@code {
+    [Parameter] public int forumId { get; set; }
+    [Parameter] public int categoryId { get; set; }
+    [Parameter] public int topicId { get; set; }
+    private Models.ForumTopic _topic = new Models.ForumTopic();
+    private List<Models.ForumPost> _posts = new List<Models.ForumPost>();
+    private int _postIdToDelete = -1;
+
+    public void Dispose()
+    {
+        blazorModal.OnConfirmDeleteForumTopic -= DeleteTopicConfirmedAsync;
+        blazorModal.OnConfirmDeleteForumPostItem -= DeletePostConfirmedAsync;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _topic = await manageTopics.GetForumTopicAsync(topicId);
+        head.Title = "Forum Topic | Administration";
+        await LoadPostsAsync();
+
+        blazorModal.OnConfirmDeleteForumTopic += DeleteTopicConfirmedAsync;
+        blazorModal.OnConfirmDeleteForumPostItem += DeletePostConfirmedAsync;
+    }
+
+    private async Task LoadPostsAsync()
+    {
+        _posts = await managePosts.GetForumPostsAsync(topicId);
+        _posts = _posts.OrderByDescending(p => p.PostedDate).ToList();
+        await AddUserToPost();
+    }
+
+    private async Task AddUserToPost()
+    {
+        foreach (var post in _posts)
+        {
+            var user = await userManager.FindByIdAsync(post.UserId);
+            post.UserName = user.UserName;
+        }
+    }
+
+    private void DeleteTopicClicked()
+    {
+        var modalMessage = "确定要删除话题及相应的帖子吗?";
+        blazorModal.Show<ConfirmModal>("删除话题",
+            BlazorModalParameter.Get("ModalText", modalMessage),
+            BlazorModalParameter.Get("ItemToDelete", "topic"));
+    }
+
+    private void DeletePostClicked(int id)
+    {
+        _postIdToDelete = id;
+        var modalMessage = "确定要删除帖子吗?";
+        blazorModal.Show<ConfirmModal>("删除帖子",
+            BlazorModalParameter.Get("ModalText", modalMessage),
+            BlazorModalParameter.Get("ItemToDelete", "post-item"));
+    }
+
+    public async void DeleteTopicConfirmedAsync()
+    {
+        blazorModal.Close();
+
+        var deletedTopic = await manageTopics.DeleteForumTopicAsync(topicId);
+        if (deletedTopic)
+            navManager.NavigateTo(String.Format("/admin/manage/forums/{0}/categories/{1}", forumId, categoryId));
+    }
+
+    public async void DeletePostConfirmedAsync()
+    {
+        if (_postIdToDelete != -1)
+        {
+            blazorModal.Close();
+
+            var deleted = await managePosts.DeletePostAsync(_postIdToDelete);
+            if (deleted)
+                await LoadPostsAsync();
+            _postIdToDelete = -1;
+            StateHasChanged();
+        }
+    }
+}

@@ -1,0 +1,16 @@
+﻿@inherits LayoutComponentBase
+@using BlazorForum.Pages.Components.Google
+
+<div class="sidebar">
+    <NavMenu />
+</div>
+
+<div class="main">
+    <section class="top-row px-4 auth">
+        <LoginDisplay />
+    </section>
+    <section class="content px-4">
+        @Body
+    </section>
+</div>
+<GoogleAnalytics></GoogleAnalytics>

@@ -1,0 +1,59 @@
+﻿@page "/manage/forums"
+@inject HeadBuilderService head
+@inject IManageForums manageForums
+@inject IJSRuntime jsRuntime
+
+@if (_pageError)
+{
+<div class="alert alert-danger">
+    <span class="text-danger">
+        @_pageErrorMsg
+    </span>
+</div>}
+
+<header>
+    <h3>版面</h3>
+</header>
+<section>
+    <ul class="forum-ul">
+        @if (_forums == null)
+        {
+<li>Loading Forums...</li> }
+            else if (_forums.Count == 0)
+            {
+<li>No Forums Found</li> }
+            else
+            {
+                foreach (var forum in _forums)
+                {
+<li>
+    <a href="@String.Format("/admin/manage/forums/{0}", forum.ForumId)">
+        @forum.Title
+    </a>
+</li>}
+            }
+    </ul>
+</section>
+<section>
+    <AddNewForumForm OnForumCreated="UpdateForums"></AddNewForumForm>
+</section>
+<br />
+<section>
+    <AddForumTemplate OnForumCreated="UpdateForums"></AddForumTemplate>
+</section>
+
+@code { private List<Models.Forum> _forums;
+            private bool _pageError = false;
+            private string _pageErrorMsg;
+
+            protected override async Task OnInitializedAsync()
+            {
+                head.Title = "Forums | Administration";
+                _forums = await manageForums.GetForumsAsync();
+            }
+
+            public async void UpdateForums()
+            {
+                _forums = await manageForums.GetForumsAsync();
+                StateHasChanged();
+            } }

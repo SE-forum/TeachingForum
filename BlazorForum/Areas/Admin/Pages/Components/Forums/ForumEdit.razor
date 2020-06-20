@@ -1,0 +1,93 @@
+﻿@page "/manage/forums/{id:int}/edit"
+@inject IManageForums manageForums
+@inject NavigationManager navManager
+
+<h3>Forum</h3>
+<section class="content-container">
+    <EditForm Model="@forum" OnValidSubmit="UpdateForum">
+        <DataAnnotationsValidator />
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <label class="input-group-text">Title</label>
+            </div>
+            <InputText id="Title" @bind-Value="forum.Title" class="@titleClass" />
+        </div>
+        <ValidationMessage For="@(() => forum.Title)" />
+
+        <div class="input-group mt-2">
+            <div class="input-group-prepend">
+                <label class="input-group-text">支持赞/踩</label>
+            </div>
+            <div class="form-control">
+                <InputCheckbox @bind-Value="forum.EnableUpDownVotes" />
+            </div>
+        </div>
+
+        <InputTextArea id="Description" @bind-Value="forum.Description" rows="3" class="@textAreaClass" />
+        <ValidationMessage For="@(() => forum.Description)" />
+        <button class="btn btn-blazorforum mt-2 mr-2 @btnVisibility" type="submit">更新</button>
+        <button class="btn btn-blazorforum mt-2 @btnVisibility" type="button" @onclick="(() => CancelClick())">取消</button>
+        <div class="rounded bg-blazorforumbtn p-2 mt-2 text-light @submitVisibility">
+            <i class="oi oi-cog se-spin-icon"></i> Updating...
+        </div>
+    </EditForm>
+
+    @if (_showError)
+    {
+        <div class="alert alert-danger mt-2 mb-0">
+            <span class="text-danger">@_errorMsg</span>
+        </div>
+    }
+</section>
+
+@code {
+    [Parameter] public int id { get; set; }
+    private Models.Forum forum = new Models.Forum();
+    private string titleClass { get; set; } = "form-control";
+    private string textAreaClass { get; set; } = "mt-2 form-control";
+    private string btnVisibility = "d-inline-block";
+    private string submitVisibility = "d-none";
+    private bool _showError = false;
+    private string _errorMsg;
+
+    protected override async Task OnInitializedAsync()
+    {
+        forum = await manageForums.GetForumAsync(id);
+    }
+
+    private async Task UpdateForum()
+    {
+        try
+        {
+            var editedForum = new Models.Forum()
+            {
+                Title = forum.Title,
+                Description = forum.Description,
+                EnableUpDownVotes = forum.EnableUpDownVotes,
+                ForumId = id
+            };
+
+            btnVisibility = "d-none";
+            submitVisibility = "d-inline-block";
+
+            var updated = await manageForums.UpdateForumAsync(editedForum);
+
+            btnVisibility = "d-inline-block";
+            submitVisibility = "d-none";
+
+            navManager.NavigateTo("/admin/manage/forums/" + id);
+        }
+        catch(Exception ex)
+        {
+            btnVisibility = "d-inline-block";
+            submitVisibility = "d-none";
+            _showError = true;
+            _errorMsg = ex.Message;
+        }
+    }
+
+    private void CancelClick()
+    {
+        navManager.NavigateTo("/admin/manage/forums/" + id);
+    }
+}

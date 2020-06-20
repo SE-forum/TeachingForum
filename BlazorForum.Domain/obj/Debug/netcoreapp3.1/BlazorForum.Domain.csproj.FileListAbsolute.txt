@@ -1,0 +1,16 @@
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Domain\bin\Debug\netcoreapp3.1\BlazorForum.Domain.deps.json
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Domain\bin\Debug\netcoreapp3.1\BlazorForum.Domain.dll
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Domain\bin\Debug\netcoreapp3.1\BlazorForum.Domain.pdb
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Domain\bin\Debug\netcoreapp3.1\BlazorForum.Data.dll
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Domain\bin\Debug\netcoreapp3.1\BlazorForum.Models.dll
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Domain\bin\Debug\netcoreapp3.1\BlazorForum.Data.pdb
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Domain\bin\Debug\netcoreapp3.1\BlazorForum.Models.pdb
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Domain\obj\Debug\netcoreapp3.1\BlazorForum.Domain.csprojAssemblyReference.cache
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Domain\obj\Debug\netcoreapp3.1\BlazorForum.Domain.Resources.ErrorResources.resources
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Domain\obj\Debug\netcoreapp3.1\BlazorForum.Domain.Resources.GeneralResources.resources
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Domain\obj\Debug\netcoreapp3.1\BlazorForum.Domain.csproj.GenerateResource.cache
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Domain\obj\Debug\netcoreapp3.1\BlazorForum.Domain.AssemblyInfoInputs.cache
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Domain\obj\Debug\netcoreapp3.1\BlazorForum.Domain.AssemblyInfo.cs
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Domain\obj\Debug\netcoreapp3.1\BlazorForum.Domain.csproj.CopyComplete
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Domain\obj\Debug\netcoreapp3.1\BlazorForum.Domain.dll
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Domain\obj\Debug\netcoreapp3.1\BlazorForum.Domain.pdb

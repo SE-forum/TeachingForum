@@ -1,0 +1,160 @@
+﻿@page "/manage/membership/{id}/edit"
+@inject HeadBuilderService head
+@inject UserManager<ApplicationUser> userManager
+@inject NavigationManager navManager
+@inject RoleManager<IdentityRole>  roleManager
+@inject IJSRuntime jsRuntime
+
+<h3>Edit User</h3>
+<section class="content-container">
+    @if (_user == null)
+    {
+        <div><i class="oi oi-cog se-spin-icon"></i>Loading User Information...</div>
+    }
+    else
+    {
+<EditForm Model="@_user" OnValidSubmit="UpdateUser">
+    <DataAnnotationsValidator />
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">用户名</span>
+        </div>
+        <InputText @bind-Value="_user.UserName" class="form-control"></InputText>
+    </div>
+    <ValidationMessage For="@(() => _user.UserName)"></ValidationMessage>
+
+    <div class="input-group mt-2">
+        <div class="input-group-prepend">
+            <span class="input-group-text">邮箱</span>
+        </div>
+        <InputText @bind-Value="_user.Email" class="form-control"></InputText>
+    </div>
+    <ValidationMessage For="@(() => _user.Email)"></ValidationMessage>
+
+    <div class="input-group mt-2">
+        <div class="input-group-prepend">
+            <span class="input-group-text">身份</span>
+        </div>
+        @if (_roles == null)
+        {
+            <div>Loading Roles...</div>
+        }
+        else
+        {
+            <select class="form-control" @bind="_selectedItem.Value">
+                @foreach (var option in _options)
+                {
+                    <option selected="@option.Selected" value="@option.Value">@option.Text</option>
+                }
+            </select>
+        }
+    </div>
+
+    <div class="input-group mt-2">
+        <div class="input-group-prepend">
+            <span class="input-group-text">邮箱验证</span>
+        </div>
+        <div class="form-control">
+            <InputCheckbox @bind-Value="_user.EmailConfirmed"></InputCheckbox>
+        </div>
+    </div>
+
+    <!--
+    <div class="input-group mt-2">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Two Factor Enabled</span>
+            </div>
+            <div class="form-control">
+                <InputCheckbox @bind-Value="_user.TwoFactorEnabled"></InputCheckbox>
+            </div>
+        </div>
+    -->
+
+    <div class="input-group mt-2">
+        <div class="input-group-prepend">
+            <span class="input-group-text">手机号</span>
+        </div>
+        <InputText @bind-Value="_user.PhoneNumber" class="form-control"></InputText>
+    </div>
+    <ValidationMessage For="@(() => _user.PhoneNumber)"></ValidationMessage>
+
+    <div class="input-group mt-2">
+        <div class="input-group-prepend">
+            <span class="input-group-text">手机号验证</span>
+        </div>
+        <div class="form-control">
+            <InputCheckbox @bind-Value="_user.PhoneNumberConfirmed"></InputCheckbox>
+        </div>
+    </div>
+    <div class="mt-2">
+        <button type="submit" class="btn btn-blazorforum mr-2">更新</button>
+        <button @onclick="@(() => navManager.NavigateTo("/admin/manage/membership/"))" type="button" class="btn btn-blazorforum">取消</button>
+    </div>
+</EditForm>
+    }
+
+    @if(_error == true)
+    {
+        <div class="alert alert-danger mt-2 mb-0">
+            <div class="danger-text">@_errorMsg</div>
+        </div>
+    }
+</section>
+
+@code {
+    [Parameter] public string id { get; set; }
+    private ApplicationUser _user = new ApplicationUser();
+    private List<IdentityRole> _roles = new List<IdentityRole>();
+    private List<SelectListItem> _options = new List<SelectListItem>();
+    private SelectListItem _selectedItem = new SelectListItem();
+    private bool _error;
+    private string _errorMsg;
+
+    protected override async Task OnInitializedAsync()
+    {
+        head.Title = "Edit User | Administration";
+        _user = await userManager.FindByIdAsync(id);
+        _roles = roleManager.Roles.ToList();
+
+        foreach (var role in _roles)
+        {
+            if(await userManager.IsInRoleAsync(_user, role.Name))
+            {
+                _options.Add(new SelectListItem(role.Name, role.Id, true));
+                _selectedItem.Value = role.Id;
+            }
+            else
+                _options.Add(new SelectListItem(role.Name, role.Id, false));
+        }
+    }
+
+    private async Task UpdateUser()
+    {
+        try
+        {
+            var update = await userManager.UpdateAsync(_user);
+            if (update.Succeeded)
+            {
+                var currentRoles = await userManager.GetRolesAsync(_user);
+                var selectedRole = _roles.Where(p => p.Id == _selectedItem.Value).FirstOrDefault();
+                var inRole = await userManager.IsInRoleAsync(_user, selectedRole.Name);
+                if(selectedRole != null  && !inRole)
+                {
+                    // Remove user from roles before adding them, so they aren't in multiple roles
+                    // This may change later if it's determined that users should be in multiple roles.
+                    if(currentRoles.Count > 0)
+                        await userManager.RemoveFromRolesAsync(_user, currentRoles);
+
+                    await userManager.AddToRoleAsync(_user, selectedRole.Name);
+                }
+
+                navManager.NavigateTo("/admin/manage/membership/");
+            }
+        }
+        catch(Exception ex)
+        {
+            _error = true;
+            _errorMsg = ex.Message;
+        }
+    }
+}

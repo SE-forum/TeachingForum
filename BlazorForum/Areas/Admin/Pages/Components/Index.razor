@@ -1,0 +1,16 @@
+﻿@page "/dashboard"
+
+@inject HeadBuilderService head
+
+<h1>管理主页</h1>
+<section class="content-container">
+    <p>这里是管理区域</p>
+</section>
+
+
+@code{
+    protected override async Task OnInitializedAsync()
+    {
+        head.Title = "Dashboard | Administration";
+    }
+}

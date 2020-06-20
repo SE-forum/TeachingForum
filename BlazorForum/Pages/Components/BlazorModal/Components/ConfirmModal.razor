@@ -1,0 +1,14 @@
+﻿@inject IBlazorModal IBlazorModal
+
+<div class="modal-body">
+    @ModalText
+</div>
+<div class="modal-footer">
+    <button class="mr-2 btn btn-danger" @onclick="(() => IBlazorModal.ConfirmYes(ItemToDelete))">是的</button>
+    <button class="btn btn-secondary" @onclick="(() => IBlazorModal.Close())">取消</button>
+</div>
+
+@code {
+    [Parameter] public string ModalText { get; set; }
+    [Parameter] public string ItemToDelete { get; set; }
+}

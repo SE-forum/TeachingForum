@@ -1,0 +1,87 @@
+﻿@page "/manage/forums/{id:int}"
+@inject IManageForums manageForums
+@inject IManageForumCategories manageCategories
+@inject IBlazorModal blazorModal
+@inject NavigationManager navManager
+
+<section class="mb-3">
+    <a href="@String.Format("/admin/manage/forums/{0}/edit", id)" class="btn btn-blazorforum">编辑细节</a>
+    <button class="btn btn-danger float-right" @onclick="@(() => DeleteClicked())">删除版面</button>
+</section>
+<section>
+    <header>
+        <h3>@forum.Title</h3>
+        <div class="forum-details">@forum.Description</div>
+    </header>
+    <section>
+        <header class="secondary-header">
+            <i class="oi oi-folder mr-2"></i>子版块
+        </header>
+        <ul class="forum-ul">
+            @if (categories == null)
+            {
+                <li><i class="oi oi-cog se-spin-icon"></i> Loading Categories...</li>
+            }
+            else if (categories.Count == 0)
+            {
+                <li>没有子版块</li>
+            }
+            else
+            {
+                foreach (var category in categories)
+                {
+                    <li>
+                        <a href="@String.Format("/admin/manage/forums/{0}/categories/{1}",
+                          forum.ForumId, category.ForumCategoryId)">
+                            @category.Title
+                        </a>
+                    </li>
+                }
+            }
+
+        </ul>
+    </section>
+</section>
+<section>
+    <AddNewCategoryForm OnCategoryCreated="UpdateCategories" ForumId="@id"></AddNewCategoryForm>
+</section>
+
+@code {
+    [Parameter] public int id { get; set; }
+    private Models.Forum forum = new Models.Forum();
+    private List<Models.ForumCategory> categories = new List<Models.ForumCategory>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        forum = await manageForums.GetForumAsync(id);
+        categories = await manageCategories.GetForumCategoriesAsync(id);
+
+        blazorModal.OnConfirmDeleteForum += DeleteForumConfirmed;
+    }
+
+    public void Dispose()
+    {
+        blazorModal.OnConfirmDeleteForum -= DeleteForumConfirmed;
+    }
+
+    public async void UpdateCategories()
+    {
+        categories = await manageCategories.GetForumCategoriesAsync(id);
+        StateHasChanged();
+    }
+
+    private void DeleteClicked()
+    {
+        var modalMessage = "你确定要删除版面吗？这同时会删除掉相关的子版块、话题、帖子";
+        blazorModal.Show<ConfirmModal>("删除版面", BlazorModalParameter.Get("ModalText", modalMessage),
+            BlazorModalParameter.Get("ItemToDelete", "forum"));
+    }
+
+    public async void DeleteForumConfirmed()
+    {
+        blazorModal.Close();
+        var deleted = await manageForums.DeleteForumAsync(id);
+        if (deleted)
+            navManager.NavigateTo("/admin/manage/forums");
+    }
+}

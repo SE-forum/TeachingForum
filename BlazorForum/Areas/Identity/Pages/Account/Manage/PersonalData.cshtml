@@ -1,0 +1,28 @@
+﻿@page
+@model PersonalDataModel
+@{
+    ViewData["Title"] = "注销账户";
+    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+}
+
+<h4>@ViewData["Title"]</h4>
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-lg-8 col-xl-6">
+            <p>注销账户前，可以下载你的个人信息</p>
+            <p>
+                <strong>注销账户后将不可恢复，请谨慎操作</strong>
+            </p>
+            <form id="download-data" asp-page="DownloadPersonalData" method="post" class="form-group">
+                <button class="btn btn-blazorforum" type="submit">个人信息下载</button>
+            </form>
+            <p>
+                <a id="delete" asp-page="DeletePersonalData" class="btn btn-blazorforum">删除</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

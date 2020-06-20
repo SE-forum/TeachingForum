@@ -1,0 +1,68 @@
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration appConfig
+
+<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="/">@appConfig.GetSection("SiteTitle").Value</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/admin/dashboard" Match="NavLinkMatch.All">
+                <span class="oi oi-dashboard" aria-hidden="true"></span> 管理主页
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/admin/manage/forums/">
+                <span class="oi oi-chat" aria-hidden="true"></span> 版面
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/admin/manage/pages/">
+                <span class="oi oi-document" area-hidden="true"></span> 页面
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/admin/manage/membership/">
+                <span class="oi oi-people" area-hidden="true"></span> 用户
+            </NavLink>
+        </li>
+        @* // Maybe build in the ability to insert modules/components from external sources that utilize hooks or
+        something to just start working? *@
+        @*<li class="nav-item px-3">
+            <NavLink class="nav-link disabled" href="/admin/manage/modules/">
+                <span class="oi oi-task" area-hidden="true"></span> Modules
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/admin/manage/settings">
+                <span class="oi oi-cog" area-hidden="true"></span> Settings
+            </NavLink>
+        </li>*@
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/admin/manage/themes">
+                <span class="oi oi-brush" area-hidden="true"></span> 主题
+            </NavLink>
+        </li>
+
+        <!--
+        <li class="nav-item px-3">
+        <NavLink class="nav-link" href="/admin/manage/configuration">
+            <span class="oi oi-wrench" area-hidden="true"></span> Configuration
+        </NavLink>
+        </li>
+        -->
+    </ul>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

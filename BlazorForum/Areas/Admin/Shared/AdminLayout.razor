@@ -1,0 +1,38 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager navManager
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor contextAccessor
+
+<AuthorizeView Roles="Administrator">
+    <Authorized>
+        <div class="sidebar">
+            <BlazorForum.Areas.Admin.Shared.NavMenu />
+        </div>
+
+        <div class="main">
+            <div class="top-row px-4 auth">
+                <BlazorForum.Areas.Admin.Shared.LoginDisplay />
+            </div>
+
+            <div class="content px-4">
+                @Body
+            </div>
+        </div>
+        <BlazorModal />
+    </Authorized>
+    <NotAuthorized>
+        <div class="container pt-3">
+            <div class="alert alert-warning text-center">
+                    <i class="oi oi-warning"></i> You are not authorized to view this page.
+
+                    @if (context.User.Identity.Name == null)
+                    {
+                        <p>
+                            <a class="btn btn-warning mt-3" href="@String.Format("{0}://{1}/Identity/Account/Login", contextAccessor.HttpContext.Request.Scheme, contextAccessor.HttpContext.Request.Host)">
+                                LOGIN
+                            </a>
+                        </p>
+                    }
+            </div>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>

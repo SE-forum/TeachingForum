@@ -1,0 +1,61 @@
+﻿/*!
+Theme Name:绿色主题
+Theme URI: https://elliottbrand.com/
+Author: Steve Elliott
+Author URI: https://elliottbrand.com/
+Description: 
+Version: 1.0.0
+License: GNU General Public License v2 or later
+License URI: LICENSE
+Text Domain: green-theme
+*/
+
+body {
+    background-color:#fff;
+}
+
+a, a:visited{
+    color:#41ae3c;
+}
+
+a:hover{
+    color:#68b88e;
+}
+
+.btn-blazorforum {
+    background-color: #bacf65;
+    color: #fff;
+}
+
+    .btn-blazorforum:hover {
+        background-color: #68b88e;
+        color: #fff;
+    }
+
+.forum-header, .forum-category-header, .forum-topic-header {
+    background-image: linear-gradient(90deg, #41ae3c 0%, #bacf65 70%);
+    border-top-left-radius: 0.25em;
+    border-top-right-radius: 0.25em;
+    padding: 1em;
+    color: #fff;
+}
+
+.forum-post-ul li {
+    background-color: #ebebeb;
+}
+
+.forum-topic-text-div {
+    background-color: #ebebeb;
+}
+
+.main section.top-row{
+    background-color:#41ae3c;
+}
+
+.main .top-row > a, .main .top-row .btn-link {
+    color:#fff;
+}
+
+.sidebar {
+    background-image: linear-gradient(180deg, #41ae3c 0%, #bacf65 80%);
+}

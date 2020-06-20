@@ -1,0 +1,165 @@
+﻿@inject IManageForumTopics manageForumTopics
+@inject IManageTopicSubscriptions manageTopicSubscriptions
+@inject NavigationManager navManager
+@inject IJSRuntime jsRuntime
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor httpContext
+@implements IDisposable
+
+    <EditForm EditContext="@_editContext" OnSubmit="PostTopic">
+        <DataAnnotationsValidator />
+        @if (ForumTopicToEdit == null)
+        {
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <label class="input-group-text">名字</label>
+                </div>
+                <InputText id="Title" @bind-Value="_forumTopic.Title" class="@_titleClass" />
+            </div>
+            <ValidationMessage For="@(() => _forumTopic.Title)" />
+        }
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <label class="input-group-text">话题ID(仅支持a-z,0-9,-,_)</label>
+            </div>
+            <InputText id="ForumTopicUrl" @bind-Value="_forumTopic.ForumTopicUrl" class="@_urlClass" />
+        </div>
+        <div class="mt-2">
+            <InputTextArea id="@("TopicText-" + _forumTopic.ForumTopicId)" @bind-Value="_forumTopic.TopicText" rows="3" class="@_textAreaClass" />
+        </div>
+        <ValidationMessage For="@(() => _forumTopic.TopicText)" />
+
+        @if (ForumTopicToEdit != null)
+        {
+            <button id="submitBtn" class="btn btn-blazorforum mt-2" type="submit">Update</button>
+            <button class="btn btn-blazorforum mt-2" type="button" @onclick="@(() => CancelUpdate())">Cancel</button>
+        }
+        else
+        {
+            <button id="submitBtn" class="btn btn-blazorforum mt-2 @_btnVisibility" type="submit">上传话题</button>
+            <div class="rounded bg-veryDarkBlue p-2 mt-2 text-light @_submitVisibility"><i class="oi oi-cog se-spin-icon"></i> Posting</div>
+        }
+    </EditForm>
+
+@code {
+    [Parameter] public Action OnTopicAdded { get; set; }
+    [Parameter] public Action OnTopicUpdated { get; set; }
+    [Parameter] public Action OnCancel { get; set; }
+    [Parameter] public int ForumCatId { get; set; }
+    [Parameter] public string CurrentUserId { get; set; }
+    [Parameter] public Models.ForumTopic ForumTopicToEdit { get; set; }
+    private EditContext _editContext;
+    private Models.ForumTopic _forumTopic = new Models.ForumTopic() { UserId = "placeholder"};
+    private string _btnVisibility = "d-block";
+    private string _submitVisibility = "d-none";
+    private string _titleClass { get; set; } = "form-control";
+    private string _urlClass { get; set; } = "form-url-control";
+    private string _textAreaClass { get; set; } = "mt-2 form-control";
+
+    protected override void OnInitialized()
+    {
+        if (ForumTopicToEdit != null)
+            _forumTopic = ForumTopicToEdit;
+
+        _editContext = new EditContext(_forumTopic);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await jsRuntime.InvokeVoidAsync("methods.loadEditor", "TopicText-" + _forumTopic.ForumTopicId);
+        }
+    }
+
+    public void Dispose()
+    {
+        jsRuntime.InvokeVoidAsync("methods.removeTargetedEditor", "TopicText-" + _forumTopic.ForumTopicId);
+    }
+
+    private async Task PostTopic()
+    {
+        _forumTopic.TopicText = await jsRuntime.InvokeAsync<string>("methods.getTargetedEditorText", "TopicText-" + _forumTopic.ForumTopicId);
+        var isValid = _editContext.Validate();
+        if (isValid)
+        {
+            _btnVisibility = "d-none";
+            _submitVisibility = "d-inline-block";
+
+            if(ForumTopicToEdit != null)
+                await UpdateTopic();
+            else
+            {
+                await AddNewTopic();
+
+                _btnVisibility = "d-inline-block";
+                _submitVisibility = "d-none";
+                _forumTopic.Title = string.Empty;
+                _forumTopic.TopicText = string.Empty;
+                _titleClass = "form-control clear-validation";
+                _urlClass = "form-url-control clear-validation";
+                _textAreaClass = "mt-2 form-control clear-validation";
+                await jsRuntime.InvokeVoidAsync("methods.clearTargetedEditor", "TopicText-" + _forumTopic.ForumTopicId);
+
+                StateHasChanged();
+                OnTopicAdded?.Invoke();
+            }
+        }
+
+    }
+
+    private async Task AddNewTopic()
+    {
+        var newTopic = new Models.ForumTopic
+        {
+            Title = _forumTopic.Title,
+            ForumTopicUrl=_forumTopic.ForumTopicUrl,
+            TopicText = _forumTopic.TopicText,
+            UserId = CurrentUserId,
+            PostedDate = DateTime.Now.ToUniversalTime(),
+            ForumCategoryId = ForumCatId,
+            Flags = 0,
+            IsModeratorChanged = false,
+            IsDeleted = false,
+            IsApproved = true,
+            //UserIP = httpContext.HttpContext.Connection.RemoteIpAddress.ToString() // Was failing on server - fine locally
+        };
+        var postedId = await manageForumTopics.PostNewTopicAsync(newTopic);
+
+        if (postedId != 0)
+        {
+            var newTopicSubscription = new TopicSubscription { ForumTopicId = postedId, Id = CurrentUserId };
+            var subscriptionAdded = await manageTopicSubscriptions.AddSubscriptionToTopicAsync(newTopicSubscription);
+        }
+    }
+
+    private async Task UpdateTopic()
+    {
+        var editedTopic = new Models.ForumTopic
+        {
+            Title = _forumTopic.Title,
+            TopicText = _forumTopic.TopicText,
+            UserId = _forumTopic.UserId,
+            PostedDate = _forumTopic.PostedDate,
+            ForumCategoryId = _forumTopic.ForumCategoryId,
+            Flags = _forumTopic.Flags,
+            IsModeratorChanged = _forumTopic.IsModeratorChanged,
+            IsDeleted = _forumTopic.IsDeleted,
+            IsApproved = _forumTopic.IsApproved,
+            EditedBy = CurrentUserId,
+            EditedDate = DateTime.Now.ToUniversalTime(),
+            ForumTopicId = _forumTopic.ForumTopicId
+        };
+        var updated = await manageForumTopics.UpdateTopicAsync(editedTopic);
+        if (updated)
+        {
+            await jsRuntime.InvokeVoidAsync("methods.removeTargetedEditor", "PostText-" + _forumTopic.ForumTopicId);
+            OnTopicUpdated?.Invoke();
+        }
+    }
+
+    private async void CancelUpdate()
+    {
+        await jsRuntime.InvokeVoidAsync("methods.removeTargetedEditor", "PostText-" + _forumTopic.ForumTopicId);
+        OnCancel?.Invoke();
+    }
+}

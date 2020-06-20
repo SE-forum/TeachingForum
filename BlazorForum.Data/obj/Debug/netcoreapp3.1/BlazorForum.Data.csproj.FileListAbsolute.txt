@@ -1,0 +1,11 @@
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Data\bin\Debug\netcoreapp3.1\BlazorForum.Data.deps.json
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Data\bin\Debug\netcoreapp3.1\BlazorForum.Data.dll
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Data\bin\Debug\netcoreapp3.1\BlazorForum.Data.pdb
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Data\bin\Debug\netcoreapp3.1\BlazorForum.Models.dll
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Data\bin\Debug\netcoreapp3.1\BlazorForum.Models.pdb
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Data\obj\Debug\netcoreapp3.1\BlazorForum.Data.csprojAssemblyReference.cache
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Data\obj\Debug\netcoreapp3.1\BlazorForum.Data.AssemblyInfoInputs.cache
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Data\obj\Debug\netcoreapp3.1\BlazorForum.Data.AssemblyInfo.cs
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Data\obj\Debug\netcoreapp3.1\BlazorForum.Data.csproj.CopyComplete
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Data\obj\Debug\netcoreapp3.1\BlazorForum.Data.dll
+D:\CLASS\软件工程\大程\BlazorForum-master\BlazorForum.Data\obj\Debug\netcoreapp3.1\BlazorForum.Data.pdb

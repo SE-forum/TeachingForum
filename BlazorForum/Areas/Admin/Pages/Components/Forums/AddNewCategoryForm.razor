@@ -1,0 +1,70 @@
+﻿@inject IManageForumCategories manageCategories
+
+<header class="header-dark">
+    <h5>创建一个子版块</h5>
+</header>
+<section class="content-container">
+    <EditForm Model="category" OnValidSubmit="CreateCategory">
+        <DataAnnotationsValidator />
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">子版块名</span>
+            </div>
+            <InputText id="Title" @bind-Value="category.Title" class="@titleClass" />
+        </div>
+        <ValidationMessage For="@(() => category.Title)" />
+
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">子版块ID(仅支持a-z,0-9,-,_)</span>
+            </div>
+            <InputText id="ForumCategoryUrl" @bind-Value="category.ForumCategoryUrl" class="@urlClass" />
+        </div>
+
+        <div class="input-group">
+            <div class="input-group-prepend mt-2">
+                <span class="input-group-text">描述</span>
+            </div>
+            <InputTextArea id="Description" @bind-Value="category.Description" rows="3" class="@textAreaClass" />
+        </div>
+        <ValidationMessage For="@(() => category.Description)" />
+        <button class="btn btn-blazorforum mt-2 @btnVisibility" type="submit">添加子版块</button>
+        <div class="rounded bg-blazorforumbtn p-2 mt-2 text-light @submitVisibility">
+            <i class="oi oi-cog se-spin-icon"></i> Adding Category...
+        </div>
+    </EditForm>
+</section>
+
+@code {
+    [Parameter] public Action OnCategoryCreated { get; set; }
+    [Parameter] public int ForumId { get; set; }
+    private Models.ForumCategory category = new Models.ForumCategory();
+    private string titleClass { get; set; } = "form-control";
+    private string urlClass { get; set; } = "form-url-control";
+    private string textAreaClass { get; set; } = "mt-2 form-control";
+    private string btnVisibility = "d-block";
+    private string submitVisibility = "d-none";
+
+    private async Task CreateCategory()
+    {
+        var newCategory = new Models.ForumCategory()
+        {
+            Title = category.Title,
+            ForumCategoryUrl = category.ForumCategoryUrl,
+            Description = category.Description,
+            ForumId = ForumId
+        };
+    var added = await manageCategories.CreateCategoryAsync(newCategory);
+
+    btnVisibility = "d-inline-block";
+        submitVisibility = "d-none";
+        category.Title = string.Empty;
+        category.Description = string.Empty;
+
+        titleClass = "form-control clear-validation";
+        urlClass ="form-url-control clear-validation";
+        textAreaClass = "mt-2 form-control clear-validation";
+        StateHasChanged();
+    OnCategoryCreated?.Invoke();
+}
+}
