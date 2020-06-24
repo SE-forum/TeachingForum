@@ -53,7 +53,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        head.Title = "Forums";
+        head.Title = "论坛";
         _forums = await manageForums.GetForumsAsync();
 
         await SetTopicsCount();

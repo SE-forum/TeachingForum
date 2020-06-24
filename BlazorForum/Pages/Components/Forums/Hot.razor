@@ -1,0 +1,74 @@
+﻿@page "/Hot"
+@using Microsoft.JSInterop
+@using BlazorForum.Domain.Interfaces
+@using BlazorForum.Pages.Components.Head
+
+@inject HeadBuilderService head
+@inject IManageForums manageForums
+@inject IManageForumCategories manageCategories
+@inject IManageForumTopics manageTopics
+@inject UserManager<ApplicationUser> userManager
+@inject IJSRuntime JSRuntime
+
+@if (_topics == null)
+{
+    <div class="mb-2 loading-div">
+        <em><i class="oi oi-cog se-spin-icon"></i> @GeneralResources.Loading</em>
+    </div>
+}
+else
+{
+    @if (_topics.Count == 0)
+    {
+        <div class="alert alert-secondary">
+            <span class="text-secondary">@GeneralResources.NoForumsFound</span>
+        </div>
+    }
+    foreach (var topic in _topics)
+    {
+        <div class="mb-2">
+            <header class="forum-header">
+                <h3>@topic.Title</h3>
+            </header>
+
+            <ul class="forum-ul">
+
+                <li>
+                    <a href="@String.Format("/topic/{0}/{1}",
+                        topic.ForumTopicId, UrlFormatting.PrepareUrlText(topic.ForumTopicUrl))">
+                        @topic.Title
+                    </a>
+                    ( @topic.Flags )
+                    <div class="topic-blazifier">
+                        Posted @Domain.Utilities.Formatting.DateTimeFormatting.RelativeDateAgo(topic.PostedDate)
+                        by @topic.UserName
+                    </div>
+                </li>
+
+
+            </ul>
+        </div>
+    }
+}
+
+@code {
+    private List<Models.ForumTopic> _topics;
+    private List<TopicPostCount> _topicCountList = new List<TopicPostCount>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        head.Title = "Topics";
+        _topics = await manageTopics.GetAllApprovedForumTopicsAsync_order();
+        await AddUserToTopicAsync();
+    }
+    private async Task AddUserToTopicAsync()
+    {
+        foreach (var topic in _topics)
+        {
+            var user = await userManager.FindByIdAsync(topic.UserId);
+            topic.UserName = user.UserName;
+        }
+    }
+
+}
+

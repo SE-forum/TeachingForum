@@ -1166,3 +1166,7 @@ D:\CLASS\软件工程\大程\论坛\TeachingForum\BlazorForum\obj\Debug\netcorea
 D:\CLASS\软件工程\大程\论坛\TeachingForum\BlazorForum\obj\Debug\netcoreapp3.1\BlazorForum.dll
 D:\CLASS\软件工程\大程\论坛\TeachingForum\BlazorForum\obj\Debug\netcoreapp3.1\BlazorForum.pdb
 D:\CLASS\软件工程\大程\论坛\TeachingForum\BlazorForum\obj\Debug\netcoreapp3.1\BlazorForum.genruntimeconfig.cache
+D:\CLASS\软件工程\大程\论坛\TeachingForum\BlazorForum\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\Components\Forums\Hot.razor.g.cs
+D:\CLASS\软件工程\大程\论坛\TeachingForum\BlazorForum\obj\Debug\netcoreapp3.1\Razor\Pages\Components\Forums\Hot.razor.g.cs
+D:\CLASS\软件工程\大程\论坛\TeachingForum\BlazorForum\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\Components\Forums\Search.razor.g.cs
+D:\CLASS\软件工程\大程\论坛\TeachingForum\BlazorForum\obj\Debug\netcoreapp3.1\Razor\Pages\Components\Forums\Search.razor.g.cs

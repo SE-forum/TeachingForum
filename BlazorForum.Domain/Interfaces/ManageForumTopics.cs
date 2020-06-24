@@ -11,6 +11,7 @@ namespace BlazorForum.Domain.Interfaces
     {
         Task<List<ForumTopic>> GetForumTopicsAsync(int categoryId);
         Task<List<ForumTopic>> GetAllApprovedForumTopicsAsync();
+        Task<List<ForumTopic>> GetAllApprovedForumTopicsAsync_order();
         Task<List<ForumTopic>> GetApprovedForumTopicsAsync(int categoryId);
         Task<ForumTopic> GetForumTopicAsync(int topicId);
         Task<int> PostNewTopicAsync(ForumTopic newTopic);
@@ -33,6 +34,9 @@ namespace BlazorForum.Domain.Interfaces
 
         public async Task<List<ForumTopic>> GetAllApprovedForumTopicsAsync() =>
             await new Data.Repository.ForumTopics(_context).GetAllApprovedForumTopicsAsync();
+
+        public async Task<List<ForumTopic>> GetAllApprovedForumTopicsAsync_order() =>
+            await new Data.Repository.ForumTopics(_context).GetAllApprovedForumTopicsAsync_order();
 
         public async Task<List<ForumTopic>> GetApprovedForumTopicsAsync(int categoryId) =>
             await new Data.Repository.ForumTopics(_context).GetApprovedForumTopicsAsync(categoryId);

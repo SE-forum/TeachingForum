@@ -1,0 +1,46 @@
+﻿@page "/search"
+@inject HeadBuilderService head
+@inject IManageForums manageForums
+@inject IManageForumCategories manageCategories
+@inject IManageForumTopics manageTopics
+@inject IJSRuntime JSRuntime
+
+            <div class="wrap">
+                <div class="search">
+                    <textarea rows="2" cols="80" style="resize:none" />
+                    <br>
+                    <form>
+                        <button formaction="https://localhost:44333/category/4/communicationm" id="submitBtn" class="btn btn-blazorforum mt-2" type="submit">搜索</button>
+                    </form>
+                </div>
+            </div>
+
+@code {
+    private List<Models.Forum> _forums;
+    private List<TopicPostCount> _topicCountList = new List<TopicPostCount>();
+    private string textAreaClass { get; set; } = "mt-2 form-control";
+    protected override async Task OnInitializedAsync()
+    {
+        head.Title = "Search";
+        _forums = await manageForums.GetForumsAsync();
+
+        await SetTopicsCount();
+    }
+
+    protected async Task SetTopicsCount()
+    {
+        var categories = await manageCategories.GetForumCategoriesAsync();
+
+        foreach (var category in categories)
+        {
+            var topics = await manageTopics.GetApprovedForumTopicsAsync(category.ForumCategoryId);
+            var topicCount = new TopicPostCount
+            {
+                ParentItemId = category.ForumCategoryId,
+                ChildCount = topics.Count
+            };
+            _topicCountList.Add(topicCount);
+        }
+    }
+
+}
