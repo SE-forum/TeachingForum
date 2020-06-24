@@ -107,7 +107,9 @@
 
         var posted = await manageForumPosts.AddNewPostAsync(newPost);
 
-        if (posted)
+        var posted2 = await manageForumTopics.UpdateTopicFlagsAsync(TopicId);
+
+        if (posted&&posted2)
         {
             await new Domain.Helpers.Forum.AddPostHelpers(manageTopicSubscriptions, manageForumTopics, httpContextAccessor, userManager, emailSender)
                 .AddSubscriptionAndSendEmailToSubscribers(TopicId, CurrentUserId, TopicSlug);
